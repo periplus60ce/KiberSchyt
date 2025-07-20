@@ -1,0 +1,91 @@
+/* styles.css */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: url('background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #f8fafc;
+  text-shadow: 1px 1px 2px #000;
+}
+
+#start-screen,
+#quiz-container,
+#final-score {
+  background-color: rgba(15, 23, 42, 0.85);
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 900px;
+  margin: 4rem auto;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+
+.cyber-button {
+  background-color: #1e293b;
+  border: 2px solid #38bdf8;
+  color: #f8fafc;
+  padding: 12px 24px;
+  margin: 10px 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 0.2s;
+}
+
+.cyber-button:hover {
+  background-color: #38bdf8;
+  color: #0f172a;
+}
+
+#scenario {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+#feedback {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.hidden {
+  display: none;
+}
+.spoof-link {
+  position: relative;
+  color: blue;
+  text-decoration: underline;
+  cursor: default;
+}
+
+.spoof-link::after {
+  content: attr(data-real);
+  position: absolute;
+  top: 120%;
+  left: 0;
+  background: #111;
+  color: red;
+  padding: 4px 8px;
+  font-size: 0.85em;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 100;
+}
+
+.spoof-link:hover::after {
+  opacity: 1;
+}

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Force Protection Quiz</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Fallback styles */
+    html, body {
+		margin: 0;
+		padding: 0;
+		height: 100%;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+	body {
+		background: url('background.jpg') no-repeat center center fixed;
+		background-size: cover;
+		background-attachment: fixed;
+		background-position: center;
+		background-repeat: no-repeat;
+		color: #f8fafc;
+		text-shadow: 1px 1px 2px #000;
+	}
+    .cyber-button {
+      background: #38bdf8;
+      border: none;
+      color: #000;
+      padding: 0.75rem 1.25rem;
+      margin: 0.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .hidden {
+      display: none;
+    }
+    .scenario {
+      margin-bottom: 1rem;
+    }
+    #answers {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="start-screen">
+    <h1>"Protect your data like you protect your weapon."<br />"Захищай свої дані, як захищаєш свою зброю."</h1>
+    <p>Welcome to the Digital Force Protection Quiz!<br />Ласкаво просимо до вікторини з цифрового захисту!</p>
+    <p>You will be presented with 20 scenarios. Select the correct cyber attack for each.<br />Вам буде представлено 20 сценаріїв. Виберіть правильний тип кібер-атаки для кожного.</p>
+    <p>Correct on 1st try: 100 pts | 2nd: 50 pts | 3rd: 25 pts<br />Правильно з першої спроби: 100 балів | з другої: 50 | з третьої: 25</p>
+    <p>Select your avatar / Оберіть свій аватар:</p>
+    <div style="margin-bottom: 1rem;">
+      <button id="btn-male" class="cyber-button" onclick="setGender('male')">✔️ Male</button>
+      <button id="btn-female" class="cyber-button" onclick="setGender('female')">Female</button>
+    </div>
+    <button class="cyber-button" onclick="startGame()">I am ready / Я готовий</button>
+  </div>
+
+  <div id="quiz-container" class="hidden">
+    <div id="scenario" class="scenario"></div>
+    <div id="answers"></div>
+    <div id="feedback" class="hidden"></div>
+    <button id="continueBtn" class="cyber-button hidden" onclick="nextQuestion()">CONTINUE</button>
+  </div>
+
+  <div id="final-score" class="hidden"></div>
+
+  <script>
+    let selectedGender = "male";
+
+    function setGender(gender) {
+      selectedGender = gender;
+      document.getElementById("btn-male").innerText = gender === "male" ? "✔️ Male" : "Male";
+      document.getElementById("btn-female").innerText = gender === "female" ? "✔️ Female" : "Female";
+    }
+
+    const attackTypes = [
+      "DoS and DDoS attacks / Атаки типу DoS та DDoS",
+      "MITM attacks / Атаки типу Посередник",
+      "Phishing attacks / Фішингові атаки",
+      "Whale-phishing attacks / Атаки на високопосадовців (whale-phishing)",
+      "Spear-phishing attacks / Цільові фішингові атаки (spear-phishing)",
+      "Ransomware / Програми-вимагачі",
+      "Password attacks / Атаки на паролі",
+      "SQL-injection attack / SQL-ін'єкція",
+      "URL interpretation / Маніпуляція URL-адресою",
+      "DNS spoofing / Підміна DNS",
+      "Session hijacking / Перехоплення сесії",
+      "Brute force attacks / Атаки грубою силою",
+      "Web attacks / Веб-атаки",
+      "Insider threat / Внутрішня загроза",
+      "Trojan horse / Троянський кінь",
+      "Drive-by attacks / Drive-by атаки",
+      "XSS attacks / XSS-атаки",
+      "Eavesdropping attacks / Прослуховування",
+      "Birthday attack / Атака дня народження",
+      "Malware attack / Шкідливе програмне забезпечення"
+    ];
+
+    const scenarios = [
+		{
+			text: "You’re part of a forward-deployed PSYOP team broadcasting over local frequencies in a contested area. Suddenly, the comms trailer’s uplink drops — the network slows to a crawl. Satellites show no kinetic activity, and the equipment isn’t damaged. But nothing’s getting through. It’s like the internet has hit a wall. / Ви працюєте у складі передової групи психологічних операцій, що веде трансляцію на місцевих частотах у зоні бойових дій. Раптово зникає підключення трейлера зв’язку — мережа сповільнюється до майже повної зупинки. Супутники не фіксують жодної активності, обладнання не пошкоджене. Але нічого не проходить. Ніби інтернет уперся в стіну.",
+			answer: "DoS and DDoS attacks / Атаки типу DoS та DDoS",
+			debrief: "This isn’t a glitch — it’s a DDoS attack. Multiple systems flooding your network to overwhelm and isolate you. / Це DDoS-атака — мережу перевантажено трафіком, щоб ізолювати вас."
+		},
+		{
+			text: "While coordinating with an allied unit over unsecured Wi-Fi at a local FOB café, strange errors begin popping up. A teammate notices their GPS app shows a wrong location, and encrypted chats suddenly disconnect. You notice a laptop nearby — unmarked, antenna connected, eyes flicking between screens. / Під час координації з підрозділом союзників через незахищену Wi-Fi мережу в місцевому кафе при передовій базі, починають з’являтися дивні збої. Один з товаришів помічає, що його GPS-додаток показує неправильне місце, а зашифровані чати раптово розриваються. Поруч ви помічаєте ноутбук без позначень — під’єднана антена, а очі власника швидко бігають між екранами.",
+			answer: "MITM attacks / Атаки типу Посередник",
+			debrief: "An attacker inserted themselves into your communication — classic MITM. / Атакувальник перехопив ваші дані — типова атака Людина посередині."
+		},
+		{
+			text: "You receive an email from “Col. J. Matthews” with the subject: “URGENT: Mission Brief Revision”. It’s flagged high priority and contains a PDF attachment. You’re just about to open it when you remember — you’re not even assigned to Matthews’ unit. And the formatting in the email feels… off. / Ви отримуєте електронного листа від “полковника Дж. Метьюза” з темою: “ТЕРМІНОВО: оновлення брифінгу по місії”. Лист позначено як пріоритетний і містить PDF-додаток. Ви вже збираєтесь його відкрити, коли раптом згадуєте — ви навіть не належите до підрозділу Метьюза. Та й форматування листа якось… підозріле.",
+			answer: "Phishing attacks / Фішингові атаки",
+			debrief: "Impersonation to trick you into opening malware — a phishing attack. / Імітація авторитетного джерела для поширення шкідливого ПЗ — фішинг."
+		},
+		{
+			text: "Cybercom alerts you: A high-level officer's inbox was compromised after they clicked on a forged document titled “NATO Briefing - Top Secret.” It turns out the email bypassed multiple filters due to its clean formatting, realistic metadata, and insider tone. It wasn’t random — it was tailored. / Кіберком повідомляє: електронну пошту високопоставленого офіцера було скомпрометовано після того, як він відкрив підроблений документ під назвою “Брифінг НАТО – Цілком таємно”. Виявилося, що лист пройшов через кілька рівнів фільтрації завдяки чистому форматуванню, реалістичним метаданим і стилю, притаманному внутрішній комунікації. Це була не випадкова атака — її створили спеціально під ціль.",
+			answer: "Whale-phishing attacks / Атаки на високопосадовців (whale-phishing)",
+			debrief: "This was a whale-phishing attack — targeting leadership using sophisticated impersonation. / Це була атака whale-phishing — цільова атака на керівництво з використанням реалістичного фішингу."
+		},
+		{
+			text: "An analyst receives an email with perfect grammar, correct call signs, and an attached “daily SIGINT digest.” But it came from a personal Gmail address. The analyst downloads the file. A week later, logs show unauthorized data access from a foreign IP. The attacker knew exactly who to target — and how. / Аналітик отримує електронного листа з ідеальною граматикою, правильними позивними та вкладенням — “щоденний звіт SIGINT”. Але лист надійшов із особистої адреси Gmail. Аналітик завантажує файл. Через тиждень журнали показують несанкціонований доступ до даних із закордонної IP-адреси. Зловмисник точно знав, кого і як атакувати.",
+			answer: "Spear-phishing attacks / Цільові фішингові атаки (spear-phishing)",
+			debrief: "This was spear-phishing — highly tailored, identity-based deception. / Це spear-phishing — персоналізована атака, побудована на соціальній інженерії."
+		},
+		{
+			text: "You’re tasked with extracting intel from a captured laptop found in a safehouse. As soon as you plug it into the secure analysis terminal, the screen flashes red: “Your files have been encrypted. Pay 3 BTC to unlock.” The ops plan you were decrypting? Gone — locked behind digital bars. / Вам доручено витягти розвіддані з захопленого ноутбука, знайденого в безпечному будинку. Щойно ви під’єднуєте його до захищеного аналітичного термінала, екран миттєво спалахує червоним: “Ваші файли зашифровані. Сплатіть 3 BTC для розблокування.” Оперативний план, який ви намагалися розшифрувати? Зник — замкнений за цифровими ґратами.",
+			answer: "Ransomware / Програми-вимагачі",
+			debrief: "This is ransomware — a data lockdown followed by an extortion demand. / Це програма-вимагач — блокування даних і вимога викупу."
+		},
+		{
+			text: "The 82nd Brigade's shared network account just locked out after five failed login attempts. An hour later, someone logged in using the correct credentials — but from an unregistered IP in a foreign country. You check the logs and see thousands of failed attempts across the week — someone’s been hammering the gate. / Загальний обліковий запис 82-ї бригади щойно було заблоковано після п’яти невдалих спроб входу. За годину хтось увійшов у систему, використовуючи правильні облікові дані — але з невідомої IP-адреси в іншій країні. Ви перевіряєте журнали і бачите тисячі невдалих спроб входу протягом тижня — хтось методично ламав ворота.",
+			answer: "Password attacks / Атаки на паролі",
+			debrief: "This was a password brute attack — successful due to weak credentials. / Це була атака на паролі — успіх досягнуто через слабкі паролі."
+		},
+		{
+			text: "Your cyber recon team audits a contractor’s internal database used for storing incident reports. A junior specialist types the following into a search bar: 'SELECT * FROM users WHERE 1=1' Suddenly, rows of usernames, passwords, and classified notes pour out. It wasn’t supposed to happen. / Ваша команда кіберрозвідки проводить аудит внутрішньої бази даних підрядника, де зберігаються звіти про інциденти. Молодший фахівець вводить у рядок пошуку такий запит: 'SELECT * FROM users WHERE 1=1' Раптом на екран виводяться ряди з іменами користувачів, паролями та засекреченими примітками. Цього не повинно було статися.",
+			answer: "SQL-injection attack / SQL-ін'єкція",
+			debrief: "SQL injection allows attackers to manipulate databases via unsanitized input. / SQL-ін'єкція дозволяє зловмисникам втручатися у бази даних через незахищені поля."
+		},
+		{
+			text: 'You receive an internal-looking link from an intelligence partner: <span class="spoof-link" data-real="http://malicious-domain.ru/phish/briefing.html">http://intranet.mil-access.net/briefing.html</span>. It looks normal… but hovering over it reveals the true destination. Just subtle enough to fool a tired operator under pressure. / Ви отримуєте посилання, яке виглядає як внутрішнє, від партнера з розвідки: <span class="spoof-link" data-real="http://malicious-domain.ru/phish/briefing.html">http://intranet.mil-access.net/briefing.html</span>. На перший погляд усе виглядає нормально… але при наведенні з’являється справжня адреса. Ледь помітна різниця — якраз достатня, щоб обдурити втомленого оператора під тиском.',
+			answer: "URL interpretation / Маніпуляція URL-адресою",
+			debrief: "This is a spoofed link — designed to look familiar but redirect maliciously. / Це підроблений URL — виглядає правдоподібно, але веде на шкідливу адресу."
+		},
+		{
+			text: "You're deployed with a SIGINT unit and attempt to access secure.defense.local to retrieve encrypted briefings. But the site loads a strange version — odd font, slightly altered design. Seconds later, your browser warns of a certificate error. Your DNS queries were redirected. / Ви перебуваєте у відрядженні з підрозділом радіоелектронної розвідки (SIGINT) і намагаєтесь отримати зашифровані зведення з сайту secure.defense.local. Але сторінка завантажується в дивному вигляді — незвичний шрифт, трохи змінений дизайн. За кілька секунд браузер попереджає про помилку сертифіката. Ваші DNS-запити були перенаправлені.",
+			answer: "DNS spoofing / Підміна DNS",
+			debrief: "This is DNS spoofing — the attacker rerouted your DNS queries. / Це DNS-спуфінг — вас перенаправлено через підміну DNS."
+		},
+		{
+			text: "An intelligence analyst logs into a secure dashboard from a remote OP, but forgets to log out when stepping away. Minutes later, another user appears in the system, pulling classified records under the analyst's credentials — but the analyst never returned./ Аналітик розвідки входить до захищеної панелі управління з віддаленого спостережного пункту, але забуває вийти з системи, коли відходить. За кілька хвилин у системі з’являється інший користувач, який завантажує секретні дані, використовуючи облікові дані аналітика — хоча сам аналітик так і не повернувся.",
+			answer: "Session hijacking / Перехоплення сесії",
+			debrief: "This is session hijacking — stealing the session token to impersonate. / Це перехоплення сесії — використання ідентифікатора для доступу."
+		},
+		{
+			text: "A Red Team operator simulating an adversary launches a test on your unit’s intranet portal. Within minutes, their script tries over 50,000 password combinations. Eventually, one sticks: “Panther123”. Access granted. / Оператор Red Team, імітуючи дії противника, запускає тест на внутрішньому порталі вашого підрозділу. Упродовж кількох хвилин його скрипт перебирає понад 50 000 варіантів паролів. Зрештою один спрацьовує: “Panther123”. Доступ надано.",
+			answer: "Brute force attacks / Атаки грубою силою",
+			debrief: "Brute force relies on volume — weak passwords fall fast. / Атаки грубою силою використовують масовий підбір — слабкі паролі не витримують."
+		},
+		{
+			text: "A junior soldier opens a website titled “UN Field Safety Guidelines” from a shared drive. The page looks legit — but behind it, a hidden script auto-executes in the browser. Now their browser starts making silent calls to an unknown domain. No download needed. No prompt shown. / Молодий солдат відкриває вебсторінку з назвою “Правила безпеки ООН у польових умовах” із загальної директорії. Сторінка виглядає правдоподібно — але в її коді прихований скрипт, який автоматично запускається у браузері. Тепер браузер у фоновому режимі надсилає запити на невідомий домен. Жодного завантаження. Жодного попередження.",
+			answer: "Web attacks / Веб-атаки",
+			debrief: "This was likely XSS or drive-by malware from a trusted-looking site. / Це була атака типу XSS або drive-by з авторитетного джерела."
+		},
+		{
+			text: "A high-clearance technician begins acting strangely. Logs show they accessed troves of data outside their operational scope. When questioned, they claim it was for 'backup purposes' — but further review reveals some of that data was copied to a USB drive and removed from the facility. / Технік з високим рівнем допуску починає поводитися підозріло. Журнали показують, що він отримував доступ до великих обсягів даних, які не входили до сфери його повноважень. На запитання він відповідає, що це було “для резервного копіювання” — але подальший аналіз показує, що частину цих даних було скопійовано на USB-носій і винесено за межі об'єкта.",
+			answer: "Insider threat / Внутрішня загроза",
+			debrief: "This is an insider threat — when internal actors violate trust. / Це внутрішня загроза — коли співробітник зловживає довірою."
+		},
+		{
+			text: "Your unit receives a USB stick from a local vendor — labeled “Translation Tool for Field Use.” It even includes a NATO logo. Upon plugging it in, the tool appears functional, but hidden in the background it starts connecting to remote servers and creating new processes in your task manager. / Ваш підрозділ отримує USB-накопичувач від місцевого постачальника — з етикеткою “Інструмент перекладу для польового використання”. На ньому навіть є логотип НАТО. Після підключення пристрій здається повністю робочим, але в фоновому режимі він починає встановлювати з’єднання з віддаленими серверами та створювати нові процеси в диспетчері завдань.",
+			answer: "Trojan horse / Троянський кінь",
+			debrief: "This is a Trojan — disguised as helpful software, but malicious. / Це троян — виглядає корисним, але несе загрозу."
+		},
+		{
+			text: "During a joint patrol debrief, one of your team members connects to an external news site to verify a breaking report. They don’t download anything — just visit the page. Minutes later, antivirus software lights up with alerts. A hidden script installed spyware silently in the background. / Під час розбору спільного патрулю один із членів вашої команди заходить на зовнішній новинний сайт, щоб перевірити термінове повідомлення. Він нічого не завантажує — просто відкриває сторінку. За кілька хвилин антивірус видає низку попереджень. Прихований скрипт безшумно встановив шпигунське ПЗ у фоновому режим",
+			answer: "Drive-by attacks / Drive-by атаки",
+			debrief: "This is a drive-by attack — no click needed, just exposure. / Це атака типу drive-by — зараження без взаємодії."
+		},
+		{
+			text: "You notice a suspicious van parked outside your compound for several hours. Meanwhile, encrypted chats between command and your team show strange lag — and occasional dropped messages. SIGINT confirms: radio emissions from the van match passive packet-capturing equipment. / Ви помічаєте підозрілий фургон, який уже кілька годин стоїть біля периметра вашого об’єкта. Тим часом зашифровані чати між командуванням і вашою командою починають лагати — з’являються затримки і час від часу зникають повідомлення. Підрозділ SIGINT підтверджує: радіовипромінювання з фургона відповідає обладнанню для пасивного перехоплення трафіку.",
+			answer: "Eavesdropping attacks / Прослуховування",
+			debrief: "This is an eavesdropping attack — intercepting communications silently. / Це атака типу прослуховування — непомітне перехоплення інформації."
+		},
+		{
+			text: "A cryptography lab simulates a password hashing function under stress. A researcher runs a collision test and suddenly — two different strings produce the same hash. The system flashes red: “Collision Found — Authentication Bypassed”. The lab goes silent. / У криптографічній лабораторії моделюють роботу функції хешування паролів під навантаженням. Один із дослідників запускає тест на колізії — і раптом два різні рядки видають однаковий хеш. Система спалахує червоним: “Виявлено колізію — автентифікацію обійдено”. У лабораторії западає тиша.",
+			answer: "Birthday attack / Атака дня народження",
+			debrief: "This is a birthday attack — exploiting hash collisions. / Це атака дня народження — вразливість у хеш-функціях."
+		},
+		{
+			text: "A field laptop begins behaving strangely after a video file is opened from an external drive. Pop-ups appear, network traffic spikes, and antivirus fails to start. A hidden payload was buried inside the file and activated as soon as it played. / Польовий ноутбук починає поводитися дивно після відкриття відеофайлу з зовнішнього накопичувача. З’являються спливаючі вікна, різко зростає мережевий трафік, а антивірус перестає запускатися. Усередині файлу був прихований шкідливий код, який активувався одразу після відтворення.",
+			answer: "Malware attack / Шкідливе програмне забезпечення",
+			debrief: "This is a general malware attack — using a file as a delivery vehicle. / Це атака зі шкідливим ПЗ — використання файлу як засобу доставки."
+		}
+		
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let attempts = 0;
+
+    function shuffleScenarios(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function startGame() {
+      console.log("Gender selected:", selectedGender);
+      console.log("Scenarios loaded:", scenarios.length);
+      shuffleScenarios(scenarios);
+      currentIndex = 0;
+      score = 0;
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("quiz-container").classList.remove("hidden");
+      loadScenario();
+    }
+
+    function loadScenario() {
+		const scenario = scenarios[currentIndex];
+		attempts = 0;
+		document.getElementById("scenario").innerHTML = scenario.text;
+		document.getElementById("answers").innerHTML = "";
+		document.getElementById("feedback").classList.add("hidden");
+		document.getElementById("continueBtn").classList.add("hidden");
+
+		// Step 1: Filter out the correct answer from the full list
+		const incorrectOptions = attackTypes.filter(type => type !== scenario.answer);
+
+		// Step 2: Shuffle and take 9 random incorrect answers
+		const shuffledIncorrect = incorrectOptions.sort(() => 0.5 - Math.random()).slice(0, 9);
+
+		// Step 3: Add the correct answer to the mix
+		const mixedOptions = [...shuffledIncorrect, scenario.answer];
+
+		// Step 4: Shuffle all 10 options again so the correct one isn’t always last
+		const finalOptions = mixedOptions.sort(() => 0.5 - Math.random());
+
+		// Step 5: Render the buttons
+		finalOptions.forEach(type => {
+		const btn = document.createElement("button");
+		btn.className = "cyber-button";
+		btn.innerText = type;
+		btn.onclick = () => handleAnswer(type, scenario.answer);
+		document.getElementById("answers").appendChild(btn);
+		});
+	}
+
+    function handleAnswer(selected, correct) {
+		attempts++;
+
+		// Disable the clicked button and highlight it
+		const buttons = document.querySelectorAll("#answers .cyber-button");
+		buttons.forEach(btn => {
+			if (btn.innerText === selected) {
+			btn.disabled = true;
+			btn.style.opacity = "0.5";
+			btn.style.border = selected === correct ? "2px solid #00ff99" : "2px solid #ff5555";
+			}
+		});
+
+		if (selected === correct) {
+			let earned = attempts === 1 ? 100 : attempts === 2 ? 50 : 25;
+			score += earned;
+			document.getElementById("feedback").innerHTML = `<p>Correct! / Правильно! (+${earned})</p><p>${scenarios[currentIndex].debrief}</p>`;
+			document.getElementById("feedback").classList.remove("hidden");
+			document.getElementById("continueBtn").classList.remove("hidden");
+
+			// Disable all remaining buttons
+			buttons.forEach(btn => btn.disabled = true);
+		} else if (attempts >= 3) {
+			document.getElementById("feedback").innerHTML = `<p>No correct answer. Moving on. / Невірно. Переходимо далі.</p><p>${scenarios[currentIndex].debrief}</p>`;
+			document.getElementById("feedback").classList.remove("hidden");
+			document.getElementById("continueBtn").classList.remove("hidden");
+
+			// Disable all remaining buttons
+			buttons.forEach(btn => btn.disabled = true);
+		}
+	}
+
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex >= scenarios.length) {
+        showFinalScore();
+      } else {
+        loadScenario();
+      }
+    }
+
+    function showFinalScore() {
+      document.getElementById("quiz-container").classList.add("hidden");
+      const result = document.getElementById("final-score");
+      let title, image;
+      if (score >= 1850) {
+        title = "You are a DFP warrior. Level - Kharakternyk / Ти воїн цифрового фронту. Рівень - Характерник";
+        image = selectedGender === "male" ? "male1.jpg" : "female1.jpg";
+      } else if (score >= 1200) {
+        title = "You are a DFP warrior. Level - Cossack / Ти воїн цифрового фронту. Рівень - Козак";
+        image = selectedGender === "male" ? "male2.jpg" : "female2.jpg";
+      } else {
+        title = "You are a DFP warrior. Level - Djura / Ти воїн цифрового фронту. Рівень - Джура";
+        image = selectedGender === "male" ? "male3.jpg" : "female3.jpg";
+      }
+
+      result.classList.remove("hidden");
+      result.innerHTML = `<h2>You scored ${score} / Ви набрали ${score} балів</h2><h3>${title}</h3>
+        <img src="${image}" alt="Result Image" style="max-width:300px;margin-top:15px;border:2px solid #38bdf8;border-radius:10px;" onerror="this.style.display='none';">`;
+    }
+  </script>
+</body>
+</html>
