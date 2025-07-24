@@ -58,6 +58,19 @@
     <button class="cyber-button" onclick="startGame()">I am ready / Я готовий</button>
   </div>
 
+<script>
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if (
+      e.key === "F12" || 
+      (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+      (e.ctrlKey && e.key === "U")
+    ) {
+      e.preventDefault();
+    }
+  });
+</script>
+
   <div id="quiz-container" class="hidden">
     <div id="scenario" class="scenario"></div>
     <div id="answers"></div>
