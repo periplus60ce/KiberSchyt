@@ -1,11 +1,11 @@
 /* styles.css */
 
 body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: url('background.jpg') no-repeat center center fixed;
-  background-size: cover;
+  background-size: 60%;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
   color: #f8fafc;
   text-shadow: 1px 1px 2px #000;
 }
@@ -88,4 +88,14 @@ p {
 
 .spoof-link:hover::after {
   opacity: 1;
+}
+
+.active-lang {
+  background: #0ea5e9 !important; /* darker blue */
+  color: #fff !important;
+  border: 2px solid #fff;
+}
+
+.hidden {
+  display: none;
 }
