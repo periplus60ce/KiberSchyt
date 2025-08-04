@@ -6,23 +6,23 @@
   <title>Digital Force Protection Quiz</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Fallback styles */
     html, body {
-		margin: 0;
-		padding: 0;
-		height: 100%;
-		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-	}
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-	body {
-		background: url('background.jpg') no-repeat center center fixed;
-		background-size: cover;
-		background-attachment: fixed;
-		background-position: center;
-		background-repeat: no-repeat;
-		color: #f8fafc;
-		text-shadow: 1px 1px 2px #000;
-	}
+    body {
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: #f8fafc;
+      text-shadow: 1px 1px 2px #000;
+    }
+
     .cyber-button {
       background: #38bdf8;
       border: none;
@@ -33,74 +33,55 @@
       cursor: pointer;
       font-size: 1rem;
     }
+
     .hidden {
       display: none;
     }
+
     .scenario {
       margin-bottom: 1rem;
     }
+
     #answers {
       margin-bottom: 1rem;
+    }
+
+    .active-lang {
+      border: 2px solid #facc15;
+      background-color: #0ea5e9;
     }
   </style>
 </head>
 <body>
+
   <div id="language-toggle" style="text-align:center;margin-top:1rem;">
-  <button class="cyber-button" onclick="switchLanguage('en')">🌐 English</button>
-  <button class="cyber-button" onclick="switchLanguage('ua')">🌐 Українська</button>
-</div>
-
-<div id="start-screen">
-  <div class="lang lang-en">
-    <h1>"Protect your data like you protect your weapon."</h1>
-    <p>Welcome to the Digital Force Protection Quiz!</p>
-    <p>You will be presented with 20 scenarios. Select the correct cyber attack for each.</p>
-    <p>Correct on 1st try: 100 pts | 2nd: 50 pts | 3rd: 25 pts</p>
-    <p>Select your avatar:</p>
-    <button id="btn-male" class="cyber-button" onclick="setGender('male')">✔️ Male</button>
-    <button id="btn-female" class="cyber-button" onclick="setGender('female')">Female</button>
-    <button class="cyber-button" onclick="startGame()">I am ready</button>
+    <button class="cyber-button" onclick="switchLanguage('en')">🌐 English</button>
+    <button class="cyber-button" onclick="switchLanguage('ua')">🌐 Українська</button>
   </div>
 
-  <div class="lang lang-ua hidden">
-    <h1>"Захищай свої дані, як захищаєш свою зброю."</h1>
-    <p>Ласкаво просимо до вікторини з цифрового захисту!</p>
-    <p>Вам буде представлено 20 сценаріїв. Виберіть правильний тип кібер-атаки для кожного.</p>
-    <p>Правильно з першої спроби: 100 балів | з другої: 50 | з третьої: 25</p>
-    <p>Оберіть свій аватар:</p>
-    <button id="btn-male" class="cyber-button" onclick="setGender('male')">✔️ Чоловік</button>
-    <button id="btn-female" class="cyber-button" onclick="setGender('female')">Жінка</button>
-    <button class="cyber-button" onclick="startGame()">Я готовий</button>
+  <div id="start-screen">
+    <div class="lang lang-en">
+      <h1>"Protect your data like you protect your weapon."</h1>
+      <p>Welcome to the Digital Force Protection Quiz!</p>
+      <p>You will be presented with 20 scenarios. Select the correct cyber attack for each.</p>
+      <p>Correct on 1st try: 100 pts | 2nd: 50 pts | 3rd: 25 pts</p>
+      <p>Select your avatar:</p>
+      <button class="cyber-button gender-btn" data-gender="male" onclick="setGender('male')">✔️ Male</button>
+      <button class="cyber-button gender-btn" data-gender="female" onclick="setGender('female')">Female</button>
+      <button class="cyber-button" onclick="startGame()">I am ready</button>
+    </div>
+
+    <div class="lang lang-ua hidden">
+      <h1>"Захищай свої дані, як захищаєш свою зброю."</h1>
+      <p>Ласкаво просимо до вікторини з цифрового захисту!</p>
+      <p>Вам буде представлено 20 сценаріїв. Виберіть правильний тип кібер-атаки для кожного.</p>
+      <p>Правильно з першої спроби: 100 балів | з другої: 50 | з третьої: 25</p>
+      <p>Оберіть свій аватар:</p>
+      <button class="cyber-button gender-btn" data-gender="male" onclick="setGender('male')">✔️ Чоловік</button>
+      <button class="cyber-button gender-btn" data-gender="female" onclick="setGender('female')">Жінка</button>
+      <button class="cyber-button" onclick="startGame()">Я готовий</button>
+    </div>
   </div>
-</div>
-
-<script>
-  // Disable right-click context menu
-  document.addEventListener('contextmenu', event => event.preventDefault());
-
-  // Disable common dev tools key combinations
-  document.addEventListener('keydown', event => {
-    // Disable F12
-    if (event.key === 'F12') {
-      event.preventDefault();
-    }
-
-    // Disable Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (Dev Tools)
-    if (event.ctrlKey && event.shiftKey && ['I', 'J', 'C'].includes(event.key)) {
-      event.preventDefault();
-    }
-
-    // Disable Ctrl+U (View Source)
-    if (event.ctrlKey && event.key === 'U') {
-      event.preventDefault();
-    }
-
-    // Disable Ctrl+Shift+K (Firefox Dev Tools)
-    if (event.ctrlKey && event.shiftKey && event.key === 'K') {
-      event.preventDefault();
-    }
-  });
-</script>
 
   <div id="quiz-container" class="hidden">
     <div id="scenario" class="scenario"></div>
@@ -112,79 +93,117 @@
   <div id="final-score" class="hidden"></div>
 
   <script>
-    let selectedGender = "male";
+    // Initialization
+    let currentLang = 'en';
+    let selectedGender = 'male';
+    let currentIndex = 0;
+    let score = 0;
+    let attempts = 0;
 
-	function setGender(gender) {
-	  selectedGender = gender;
-
-	  // Define label sets for both languages
-	  const labels = {
-		en: { male: "Male", female: "Female" },
-		ua: { male: "Чоловік", female: "Жінка" }
-	  };
-
-	  // Use currentLang to determine which language to display
-	  const langLabels = labels[currentLang];
-
-	  // Update button labels dynamically
-	  document.querySelectorAll("#btn-male").forEach(btn => {
-		btn.innerText = gender === "male" ? `✔️ ${langLabels.male}` : langLabels.male;
-	  });
-
-	  document.querySelectorAll("#btn-female").forEach(btn => {
-		btn.innerText = gender === "female" ? `✔️ ${langLabels.female}` : langLabels.female;
-	  });
-	}
-
+    // Attack types and scenarios must be declared first
     const attackTypes = {
-	  en: [
-		"DoS and DDoS attacks",
-		"MITM attacks",
-		"Phishing attacks",
-		"Whale-phishing attacks",
-		"Spear-phishing attacks",
-		"Ransomware",
-		"Password attacks",
-		"SQL-injection attack",
-		"URL interpretation",
-		"DNS spoofing",
-		"Session hijacking",
-		"Brute force attacks",
-		"Web attacks",
-		"Insider threat",
-		"Trojan horse",
-		"Drive-by attacks",
-		"XSS attacks",
-		"Eavesdropping attacks",
-		"Birthday attack",
-		"Malware attack"
-	  ],
-	  ua: [
-		"Атаки типу DoS та DDoS",
-		"Атаки типу Посередник",
-		"Фішингові атаки",
-		"Атаки на високопосадовців (whale-phishing)",
-		"Цільові фішингові атаки (spear-phishing)",
-		"Програми-вимагачі",
-		"Атаки на паролі",
-		"SQL-ін'єкція",
-		"Маніпуляція URL-адресою",
-		"Підміна DNS",
-		"Перехоплення сесії",
-		"Атаки грубою силою",
-		"Веб-атаки",
-		"Внутрішня загроза",
-		"Троянський кінь",
-		"Drive-by атаки",
-		"XSS-атаки",
-		"Прослуховування",
-		"Атака дня народження",
-		"Шкідливе програмне забезпечення"
-	  ]
-	};
+      en: [
+        "DoS and DDoS attacks", "MITM attacks", "Phishing attacks", "Whale-phishing attacks", "Spear-phishing attacks",
+        "Ransomware", "Password attacks", "SQL-injection attack", "URL interpretation", "DNS spoofing",
+        "Session hijacking", "Brute force attacks", "Web attacks", "Insider threat", "Trojan horse",
+        "Drive-by attacks", "XSS attacks", "Eavesdropping attacks", "Birthday attack", "Malware attack",
+        "File Infector", "Macro Virus", "Boot Sector Virus", "Polymorphic Virus", "Resident Virus", "Worm"
+      ],
+      ua: [
+        "Атаки типу DoS та DDoS", "Атаки типу Посередник", "Фішингові атаки", "Атаки на високопосадовців (whale-phishing)", "Цільові фішингові атаки (spear-phishing)",
+        "Програми-вимагачі", "Атаки на паролі", "SQL-ін'єкція", "Маніпуляція URL-адресою", "Підміна DNS",
+        "Перехоплення сесії", "Атаки грубою силою", "Веб-атаки", "Внутрішня загроза", "Троянський кінь",
+        "Drive-by атаки", "XSS-атаки", "Прослуховування", "Атака дня народження", "Шкідливе програмне забезпечення",
+        "Файловий вірус", "Макровірус", "Вірус завантажувального сектора", "Поліморфний вірус", "Резидентний вірус", "Черв’як"
+      ]
+    };
 
-    const scenarios = [
-		  {
+    const virusScenarios = [
+	{
+      text: {
+        en: "While inspecting a compromised laptop, you notice that multiple .exe files are abnormally large. Upon analysis, a stealthy payload is found embedded in each one — slowing down operations and triggering random app crashes.",
+        ua: "Під час перевірки скомпрометованого ноутбука ви помічаєте, що кілька .exe файлів мають аномально великий розмір. Аналіз показує, що в кожному з них приховано шкідливий код, що уповільнює систему та спричиняє збої у програмах."
+      },
+      answer: {
+        en: "File Infector",
+        ua: "Файловий вірус"
+      },
+      debrief: {
+        en: "This is a file infector — a virus that attaches to executable files and degrades system performance.",
+        ua: "Це файловий вірус — він прикріплюється до виконуваних файлів і уповільнює систему."
+      }
+    },
+    {
+      text: {
+        en: "A field officer opens a Word document titled 'Mission Checklist' from an unverified email. The moment it's opened, scripts run silently in the background — sending data to an unknown server.",
+        ua: "Офіцер відкриває документ Word під назвою 'Список перевірки місії' з неперевіреного листа. Щойно документ відкривається, у фоновому режимі запускаються скрипти — і дані надсилаються на невідомий сервер."
+      },
+      answer: {
+        en: "Macro Virus",
+        ua: "Макровірус"
+      },
+      debrief: {
+        en: "This is a macro virus — it activates when a document is opened and executes embedded malicious code.",
+        ua: "Це макровірус — активується під час відкриття документа й запускає вбудований код."
+      }
+    },
+    {
+      text: {
+        en: "After inserting a field USB into a command laptop, the system fails to boot. Diagnostic tools reveal the boot sector has been overwritten by a malicious payload.",
+        ua: "Після підключення польового USB-накопичувача до командного ноутбука система не завантажується. Діагностика показує, що завантажувальний сектор було перезаписано шкідливим кодом."
+      },
+      answer: {
+        en: "Boot Sector Virus",
+        ua: "Вірус завантажувального сектора"
+      },
+      debrief: {
+        en: "This is a boot sector virus — it infects the master boot record and can prevent OS startup.",
+        ua: "Це вірус завантажувального сектора — заражає головний завантажувальний запис і блокує запуск ОС."
+      }
+    },
+    {
+      text: {
+        en: "Antivirus reports repeatedly catch new variants of the same threat, each with different file signatures. Despite frequent updates, detection fails to catch them in time.",
+        ua: "Антивірусні звіти постійно виявляють нові варіанти тієї самої загрози, але з різними сигнатурами. Попри оновлення, загроза встигає обійти захист."
+      },
+      answer: {
+        en: "Polymorphic Virus",
+        ua: "Поліморфний вірус"
+      },
+      debrief: {
+        en: "This is a polymorphic virus — it constantly changes its code to avoid detection.",
+        ua: "Це поліморфний вірус — постійно змінює код, щоб уникнути виявлення."
+      }
+    },
+    {
+      text: {
+        en: "Even after multiple antivirus scans and file deletions, your system still slows down and programs crash. Logs show re-infections coming from active memory processes.",
+        ua: "Навіть після кількох антивірусних перевірок і видалення файлів система працює повільно, а програми аварійно завершуються. Журнали показують повторні зараження з оперативної пам’яті."
+      },
+      answer: {
+        en: "Resident Virus",
+        ua: "Резидентний вірус"
+      },
+      debrief: {
+        en: "This is a resident virus — it hides in RAM and re-infects after removal.",
+        ua: "Це резидентний вірус — ховається в оперативній пам’яті й заражає повторно."
+      }
+    },
+    {
+      text: {
+        en: "Within minutes of connecting to a public network, multiple systems across your unit start showing resource spikes and unauthorized data transfers — no one installed anything.",
+        ua: "Через кілька хвилин після підключення до публічної мережі у кількох системах підрозділу зростає навантаження і починається передача даних — жодного ПЗ не встановлювали."
+      },
+      answer: {
+        en: "Worm",
+        ua: "Черв’як"
+      },
+      debrief: {
+        en: "This is a worm — a self-replicating malware that spreads across networks without human interaction.",
+        ua: "Це черв’як — самопоширюване шкідливе ПЗ, що заражає мережу без взаємодії користувача."
+      }
+    },
+	{
 			text: {
 			  en: "You’re part of a forward-deployed PSYOP team broadcasting over local frequencies in a contested area. Suddenly, the comms trailer’s uplink drops — the network slows to a crawl. Satellites show no kinetic activity, and the equipment isn’t damaged. But nothing’s getting through. It’s like the internet has hit a wall.",
 			  ua: "Ви працюєте у складі передової групи психологічних операцій, що веде трансляцію на місцевих частотах у зоні бойових дій. Раптово зникає підключення трейлера зв’язку — мережа сповільнюється до майже повної зупинки. Супутники не фіксують жодної активності, обладнання не пошкоджене. Але нічого не проходить. Ніби інтернет уперся в стіну."
@@ -464,12 +483,40 @@
 				ua: "Типова XSS — ін'єкція скрипту через інтерфейс користувача."
 			  }
 			}
-		
-    ];
+	];
 
-    let currentIndex = 0;
-    let score = 0;
-    let attempts = 0;
+    let scenarios = [...virusScenarios];
+
+    // Right-click and dev tool blocking
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', event => {
+      if (event.key === 'F12' || (event.ctrlKey && (event.key === 'U' || (event.shiftKey && ['I', 'J', 'C', 'K'].includes(event.key))))) {
+        event.preventDefault();
+      }
+    });
+
+    function switchLanguage(lang) {
+      currentLang = lang;
+      document.querySelectorAll('.lang').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.lang-' + lang).forEach(el => el.classList.remove('hidden'));
+      document.querySelectorAll('#language-toggle button').forEach(btn => btn.classList.remove('active-lang'));
+      const activeBtn = document.querySelector(`#language-toggle button[onclick="switchLanguage('${lang}')"]`);
+      if (activeBtn) activeBtn.classList.add('active-lang');
+      setGender(selectedGender); // Re-apply checkmarks on avatar buttons
+    }
+
+    function setGender(gender) {
+      selectedGender = gender;
+      const labels = {
+        en: { male: "Male", female: "Female" },
+        ua: { male: "Чоловік", female: "Жінка" }
+      };
+      const langLabels = labels[currentLang];
+      document.querySelectorAll(".gender-btn").forEach(btn => {
+        const g = btn.getAttribute("data-gender");
+        btn.innerText = gender === g ? `✔️ ${langLabels[g]}` : langLabels[g];
+      });
+    }
 
     function shuffleScenarios(array) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -479,99 +526,68 @@
     }
 
     function startGame() {
-	  console.log("Gender selected:", selectedGender);
-	  console.log("Scenarios loaded:", scenarios.length);
-	  shuffleScenarios(scenarios);
-	  currentIndex = 0;
-	  score = 0;
-	  document.getElementById("start-screen").classList.add("hidden");
-	  document.getElementById("quiz-container").classList.remove("hidden");
-	  document.getElementById("language-toggle").classList.add("hidden");
-
-	  loadScenario();
-	}
+      shuffleScenarios(scenarios);
+      currentIndex = 0;
+      score = 0;
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("quiz-container").classList.remove("hidden");
+      document.getElementById("language-toggle").classList.add("hidden");
+      loadScenario();
+    }
 
     function loadScenario() {
-	  const scenario = scenarios[currentIndex];
-	  const lang = currentLang; // either 'en' or 'ua'
-	  attempts = 0;
+      const scenario = scenarios[currentIndex];
+      const lang = currentLang;
+      attempts = 0;
 
-	  // Set scenario text in the selected language
-	  document.getElementById("scenario").innerHTML = scenario.text[lang];
+      document.getElementById("scenario").innerHTML = scenario.text[lang];
+      document.getElementById("answers").innerHTML = "";
+      document.getElementById("feedback").classList.add("hidden");
+      document.getElementById("continueBtn").classList.add("hidden");
 
-	  // Clear previous content
-	  document.getElementById("answers").innerHTML = "";
-	  document.getElementById("feedback").classList.add("hidden");
-	  document.getElementById("continueBtn").classList.add("hidden");
+      const correctAnswer = scenario.answer[lang];
+      const localizedAttackTypes = attackTypes[lang];
+      const incorrectOptions = localizedAttackTypes.filter(type => type !== correctAnswer);
+      const shuffledIncorrect = incorrectOptions.sort(() => 0.5 - Math.random()).slice(0, 9);
+      const mixedOptions = [...shuffledIncorrect, correctAnswer].sort(() => 0.5 - Math.random());
 
-	  // Step 1: Get localized correct answer
-	  const correctAnswer = scenario.answer[lang];
+      mixedOptions.forEach(type => {
+        const btn = document.createElement("button");
+        btn.className = "cyber-button";
+        btn.innerText = type;
+        btn.onclick = () => handleAnswer(type, correctAnswer, scenario.debrief[lang]);
+        document.getElementById("answers").appendChild(btn);
+      });
+    }
 
-	  // Step 2: Get attack types in current language and filter out the correct one
-	  const localizedAttackTypes = attackTypes[lang];
-	  const incorrectOptions = localizedAttackTypes.filter(type => type !== correctAnswer);
+    function handleAnswer(selected, correct, debrief) {
+      attempts++;
+      const buttons = document.querySelectorAll("#answers .cyber-button");
+      const feedback = document.getElementById("feedback");
+      const continueBtn = document.getElementById("continueBtn");
 
-	  // Step 3: Shuffle and take 9 incorrect options
-	  const shuffledIncorrect = incorrectOptions.sort(() => 0.5 - Math.random()).slice(0, 9);
+      buttons.forEach(btn => {
+        if (btn.innerText === selected) {
+          btn.disabled = true;
+          btn.style.opacity = "0.5";
+          btn.style.border = selected === correct ? "2px solid #00ff99" : "2px solid #ff5555";
+        }
+      });
 
-	  // Step 4: Add the correct answer and shuffle
-	  const mixedOptions = [...shuffledIncorrect, correctAnswer];
-	  const finalOptions = mixedOptions.sort(() => 0.5 - Math.random());
-
-	  // Step 5: Render answer buttons
-	  finalOptions.forEach(type => {
-		const btn = document.createElement("button");
-		btn.className = "cyber-button";
-		btn.innerText = type;
-		btn.onclick = () => handleAnswer(type, correctAnswer, scenario.debrief[lang]);
-		document.getElementById("answers").appendChild(btn);
-	  });
-	}
-
-    function handleAnswer(selected, correct) {
-	  attempts++;
-
-	  const buttons = document.querySelectorAll("#answers .cyber-button");
-	  const scenario = scenarios[currentIndex];
-	  const debrief = scenario.debrief[currentLang] || scenario.debrief["en"];
-	  const feedback = document.getElementById("feedback");
-	  const continueBtn = document.getElementById("continueBtn");
-
-	  // Style and disable the selected button
-	  buttons.forEach(btn => {
-		if (btn.innerText === selected) {
-		  btn.disabled = true;
-		  btn.style.opacity = "0.5";
-		  btn.style.border = selected === correct
-			? "2px solid #00ff99"
-			: "2px solid #ff5555";
-		}
-	  });
-
-	  if (selected === correct) {
-		const earned = attempts === 1 ? 100 : attempts === 2 ? 50 : 25;
-		score += earned;
-
-		const correctText = currentLang === "ua"
-		  ? `Правильно! (+${earned})`
-		  : `Correct! (+${earned})`;
-
-		feedback.innerHTML = `<p>${correctText}</p><p>${debrief}</p>`;
-		feedback.classList.remove("hidden");
-		continueBtn.classList.remove("hidden");
-		buttons.forEach(btn => btn.disabled = true);
-
-	  } else if (attempts >= 3) {
-		const wrongText = currentLang === "ua"
-		  ? "Невірно. Переходимо далі."
-		  : "No correct answer. Moving on.";
-
-		feedback.innerHTML = `<p>${wrongText}</p><p>${debrief}</p>`;
-		feedback.classList.remove("hidden");
-		continueBtn.classList.remove("hidden");
-		buttons.forEach(btn => btn.disabled = true);
-	  }
-	}
+      if (selected === correct) {
+        const earned = attempts === 1 ? 100 : attempts === 2 ? 50 : 25;
+        score += earned;
+        feedback.innerHTML = `<p>${currentLang === "ua" ? `Правильно! (+${earned})` : `Correct! (+${earned})`}</p><p>${debrief}</p>`;
+        feedback.classList.remove("hidden");
+        continueBtn.classList.remove("hidden");
+        buttons.forEach(btn => btn.disabled = true);
+      } else if (attempts >= 3) {
+        feedback.innerHTML = `<p>${currentLang === "ua" ? "Невірно. Переходимо далі." : "No correct answer. Moving on."}</p><p>${debrief}</p>`;
+        feedback.classList.remove("hidden");
+        continueBtn.classList.remove("hidden");
+        buttons.forEach(btn => btn.disabled = true);
+      }
+    }
 
     function nextQuestion() {
       currentIndex++;
@@ -583,61 +599,29 @@
     }
 
     function showFinalScore() {
-	  document.getElementById("quiz-container").classList.add("hidden");
-	  const result = document.getElementById("final-score");
+      document.getElementById("quiz-container").classList.add("hidden");
+      const result = document.getElementById("final-score");
+      const lang = currentLang;
+      let title, image;
 
-	  let title, image;
-	  const lang = currentLang;
+      if (score >= 1850) {
+        title = lang === 'en' ? "You are a DFP warrior. Level - Kharakternyk" : "Ти воїн цифрового фронту. Рівень - Характерник";
+        image = selectedGender === "male" ? "male1.jpg" : "female1.jpg";
+      } else if (score >= 1200) {
+        title = lang === 'en' ? "You are a DFP warrior. Level - Cossack" : "Ти воїн цифрового фронту. Рівень - Козак";
+        image = selectedGender === "male" ? "male2.jpg" : "female2.jpg";
+      } else {
+        title = lang === 'en' ? "You are a DFP warrior. Level - Djura" : "Ти воїн цифрового фронту. Рівень - Джура";
+        image = selectedGender === "male" ? "male3.jpg" : "female3.jpg";
+      }
 
-	  if (score >= 1850) {
-		title = lang === 'en'
-		  ? "You are a DFP warrior. Level - Kharakternyk"
-		  : "Ти воїн цифрового фронту. Рівень - Характерник";
-		image = selectedGender === "male" ? "male1.jpg" : "female1.jpg";
-	  } else if (score >= 1200) {
-		title = lang === 'en'
-		  ? "You are a DFP warrior. Level - Cossack"
-		  : "Ти воїн цифрового фронту. Рівень - Козак";
-		image = selectedGender === "male" ? "male2.jpg" : "female2.jpg";
-	  } else {
-		title = lang === 'en'
-		  ? "You are a DFP warrior. Level - Djura"
-		  : "Ти воїн цифрового фронту. Рівень - Джура";
-		image = selectedGender === "male" ? "male3.jpg" : "female3.jpg";
-	  }
-
-	  const scoreLine = lang === 'en'
-		? `You scored ${score}`
-		: `Ви набрали ${score} балів`;
-
-	  result.classList.remove("hidden");
-	  result.innerHTML = `
-		<h2>${scoreLine}</h2>
-		<h3>${title}</h3>
-		<img src="${image}" alt="Result Image" style="max-width:300px;margin-top:15px;border:2px solid #38bdf8;border-radius:10px;" onerror="this.style.display='none';">
-	  `;
-	}
+      result.classList.remove("hidden");
+      result.innerHTML = `
+        <h2>${lang === 'en' ? `You scored ${score}` : `Ви набрали ${score} балів`}</h2>
+        <h3>${title}</h3>
+        <img src="${image}" alt="Result Image" style="max-width:300px;margin-top:15px;border:2px solid #38bdf8;border-radius:10px;" onerror="this.style.display='none';">
+      `;
+    }
   </script>
-  <script>
-	  function switchLanguage(lang) {
-	  currentLang = lang;
-
-	  // Toggle language content visibility
-	  document.querySelectorAll('.lang').forEach(el => el.classList.add('hidden'));
-	  document.querySelectorAll('.lang-' + lang).forEach(el => el.classList.remove('hidden'));
-
-	  // Update button styles
-	  document.querySelectorAll('#language-toggle button').forEach(btn => {
-		btn.classList.remove('active-lang');
-	  });
-
-	  // Add active class to selected button
-	  const activeBtn = document.querySelector(`#language-toggle button[onclick="switchLanguage('${lang}')"]`);
-	  if (activeBtn) {
-		activeBtn.classList.add('active-lang');
-	  }
-	}
-  </script>
-
 </body>
 </html>
