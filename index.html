@@ -32,24 +32,90 @@
       border-radius: 10px;
       cursor: pointer;
       font-size: 1rem;
+      transition: opacity .2s ease, filter .2s ease;
+    }
+    .cyber-button:disabled {
+      cursor: not-allowed;
+      filter: grayscale(0.6);
+      opacity: 0.6;
     }
 
-    .hidden {
-      display: none;
-    }
-
-    .scenario {
-      margin-bottom: 1rem;
-    }
-
-    #answers {
-      margin-bottom: 1rem;
-    }
+    .hidden { display: none; }
+    .scenario { margin-bottom: 1rem; }
+    #answers { margin-bottom: 1rem; }
 
     .active-lang {
       border: 2px solid #facc15;
       background-color: #0ea5e9;
     }
+
+    .callsign-wrap {
+      margin: 1rem auto;
+      max-width: 720px;
+      background: rgba(0,0,0,.45);
+      padding: 1rem;
+      border: 1px solid rgba(56,189,248,.5);
+      border-radius: 10px;
+      backdrop-filter: blur(3px);
+    }
+    .callsign-wrap label {
+      display: block;
+      margin-bottom: .5rem;
+      font-weight: 600;
+    }
+    #callSign {
+      width: 100%;
+      padding: .65rem .75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(148,163,184,.8);
+      background: rgba(15,23,42,.65);
+      color: #e2e8f0;
+      outline: none;
+    }
+    #callSign:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56,189,248,.25);
+    }
+    #callSignError, #callSignErrorUA {
+      color: #fecaca;
+      margin-top: .5rem;
+      font-size: .9rem;
+      display: none;
+    }
+
+    /* Debrief table */
+    .debrief-wrap {
+      margin: 1.25rem auto;
+      max-width: 1100px;
+      background: rgba(0,0,0,.45);
+      padding: 1rem;
+      border: 1px solid rgba(56,189,248,.5);
+      border-radius: 10px;
+      backdrop-filter: blur(3px);
+    }
+    table.debrief {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .95rem;
+    }
+    table.debrief th, table.debrief td {
+      border: 1px solid rgba(148,163,184,.4);
+      padding: .5rem .6rem;
+      vertical-align: top;
+    }
+    table.debrief th {
+      background: rgba(2,6,23,.55);
+    }
+    .pill {
+      display: inline-block;
+      padding: .12rem .5rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: .8rem;
+    }
+    .ok { background: #22c55e; color: #04210f; }
+    .bad { background: #ef4444; color: #2a0b0b; }
+    .muted { color: #cbd5e1; font-size: .9rem; }
   </style>
 </head>
 <body>
@@ -68,7 +134,6 @@
       <p>Select your avatar:</p>
       <button class="cyber-button gender-btn" data-gender="male" onclick="setGender('male')">✔️ Male</button>
       <button class="cyber-button gender-btn" data-gender="female" onclick="setGender('female')">Female</button>
-      <button class="cyber-button" onclick="startGame()">I am ready</button>
     </div>
 
     <div class="lang lang-ua hidden">
@@ -79,7 +144,20 @@
       <p>Оберіть свій аватар:</p>
       <button class="cyber-button gender-btn" data-gender="male" onclick="setGender('male')">✔️ Чоловік</button>
       <button class="cyber-button gender-btn" data-gender="female" onclick="setGender('female')">Жінка</button>
-      <button class="cyber-button" onclick="startGame()">Я готовий</button>
+    </div>
+
+    <!-- Shared Call Sign + Start -->
+    <div class="callsign-wrap">
+      <label for="callSign" class="lang lang-en">Your call sign (required)</label>
+      <label for="callSign" class="lang lang-ua hidden">Ваш позивний (обов’язково)</label>
+
+      <input id="callSign" type="text" autocomplete="off" maxlength="40" placeholder="e.g., SARMAT">
+      <div id="callSignError" class="lang lang-en">Please enter your call sign.</div>
+      <div id="callSignErrorUA" class="lang lang-ua hidden">Будь ласка, введіть ваш позивний.</div>
+
+      <div style="text-align:center;margin-top:.75rem;">
+        <button id="startBtn" class="cyber-button" onclick="startGame()" disabled>I am ready</button>
+      </div>
     </div>
   </div>
 
@@ -93,14 +171,24 @@
   <div id="final-score" class="hidden"></div>
 
   <script>
-    // Initialization
+    // ====== Webhook config ======
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbw-Sih9FepwBl8s4smoOw_N97sksyAisU7ZD_dT_MJ-ag9LrKUbfh3vg8dvJpj07Q1DXQ/exec';
+
+    // ===== State =====
     let currentLang = 'en';
     let selectedGender = 'male';
     let currentIndex = 0;
     let score = 0;
     let attempts = 0;
+    let callSign = "";
 
-    // Attack types and scenarios must be declared first
+    // Per-question logs for debrief + webhook
+    const answerLog = []; // {index, questionText, correctAnswer, userAnswer, attempts, earned, isCorrect}
+
+    const callSignInput = document.getElementById('callSign');
+    const startBtn = document.getElementById('startBtn');
+
+    // ===== Data =====
     const attackTypes = {
       en: [
         "DoS and DDoS attacks", "MITM attacks", "Phishing attacks", "Whale-phishing attacks", "Spear-phishing attacks",
@@ -118,6 +206,7 @@
       ]
     };
 
+    // === Paste your full scenarios here (unchanged) ===
     const virusScenarios = [
 	{
       text: {
@@ -484,27 +573,17 @@
 			  }
 			}
 	];
-
     let scenarios = [...virusScenarios];
 
-    // Right-click and dev tool blocking
+    // ===== Dev-tools/Right-click blocking =====
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', event => {
-      if (event.key === 'F12' || (event.ctrlKey && (event.key === 'U' || (event.shiftKey && ['I', 'J', 'C', 'K'].includes(event.key))))) {
+      if (event.key === 'F12' || (event.ctrlKey && (event.key === 'U' || (event.shiftKey && ['I','J','C','K'].includes(event.key))))) {
         event.preventDefault();
       }
     });
 
-    function switchLanguage(lang) {
-      currentLang = lang;
-      document.querySelectorAll('.lang').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.lang-' + lang).forEach(el => el.classList.remove('hidden'));
-      document.querySelectorAll('#language-toggle button').forEach(btn => btn.classList.remove('active-lang'));
-      const activeBtn = document.querySelector(`#language-toggle button[onclick="switchLanguage('${lang}')"]`);
-      if (activeBtn) activeBtn.classList.add('active-lang');
-      setGender(selectedGender); // Re-apply checkmarks on avatar buttons
-    }
-
+    // ===== Helpers =====
     function setGender(gender) {
       selectedGender = gender;
       const labels = {
@@ -525,7 +604,118 @@
       }
     }
 
+    function validCallSign(value) {
+      const v = (value || "").trim();
+      return v.length >= 2;
+    }
+
+    function syncStartButton() {
+      const ok = validCallSign(callSignInput.value);
+      startBtn.disabled = !ok;
+    }
+
+    function showCallSignErrors(show) {
+      const enErr = document.getElementById('callSignError');
+      const uaErr = document.getElementById('callSignErrorUA');
+      if (currentLang === 'en') {
+        enErr.style.display = show ? 'block' : 'none';
+        uaErr.style.display = 'none';
+      } else {
+        uaErr.style.display = show ? 'block' : 'none';
+        enErr.style.display = 'none';
+      }
+    }
+
+    function setCallsignPlaceholder() {
+      callSignInput.placeholder = currentLang === 'en' ? 'e.g., SARMAT' : 'наприклад, САРМАТ';
+      startBtn.textContent   = currentLang === 'en' ? 'I am ready' : 'Я готовий';
+      document.getElementById('continueBtn').textContent = currentLang === 'en' ? 'CONTINUE' : 'ПРОДОВЖИТИ';
+    }
+
+    function nowISO(){ return new Date().toISOString(); }
+    function getClientMeta() {
+      return {
+        userAgent: navigator.userAgent || '',
+        language: navigator.language || '',
+        platform: navigator.platform || '',
+        screen: `${window.screen?.width || 0}x${window.screen?.height || 0}`,
+        tzOffsetMin: new Date().getTimezoneOffset()
+      };
+    }
+    function postToWebhook(payload) {
+      try {
+        return fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+      } catch (e) {
+        console.warn('Webhook failed:', e);
+      }
+    }
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'",'&#039;');
+    }
+    function truncateText(htmlString, max=140){
+      const tmp = document.createElement('div');
+      tmp.innerHTML = htmlString;
+      const text = tmp.textContent || tmp.innerText || '';
+      return text.length > max ? text.slice(0,max-1) + '…' : text;
+    }
+
+    // ===== Language switching =====
+    function switchLanguage(lang) {
+      currentLang = lang;
+
+      // toggle language blocks
+      document.querySelectorAll('.lang').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.lang-' + lang).forEach(el => el.classList.remove('hidden'));
+
+      // active button style
+      document.querySelectorAll('#language-toggle button').forEach(btn => btn.classList.remove('active-lang'));
+      const activeBtn = document.querySelector(`#language-toggle button[onclick="switchLanguage('${lang}')"]`);
+      if (activeBtn) activeBtn.classList.add('active-lang');
+
+      setCallsignPlaceholder();
+      setGender(selectedGender);
+      showCallSignErrors(false);
+      syncStartButton();
+    }
+
+    // ===== Events =====
+    callSignInput.addEventListener('input', () => {
+      callSignInput.value = callSignInput.value.toUpperCase(); // optional enforce upper
+      showCallSignErrors(false);
+      syncStartButton();
+    });
+    callSignInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && validCallSign(callSignInput.value)) startGame();
+    });
+
+    // ===== Quiz flow =====
     function startGame() {
+      const entered = (callSignInput.value || "").trim();
+      if (!validCallSign(entered)) {
+        showCallSignErrors(true);
+        syncStartButton();
+        return;
+      }
+      callSign = entered;
+
+      // Log quiz_started
+      postToWebhook({
+        event: 'quiz_started',
+        timestamp_utc: nowISO(),
+        callSign, language: currentLang, gender: selectedGender,
+        client: getClientMeta()
+      });
+
+      answerLog.length = 0; // reset
       shuffleScenarios(scenarios);
       currentIndex = 0;
       score = 0;
@@ -581,11 +771,35 @@
         feedback.classList.remove("hidden");
         continueBtn.classList.remove("hidden");
         buttons.forEach(btn => btn.disabled = true);
+
+        // Log final attempt for this question
+        const q = scenarios[currentIndex];
+        answerLog.push({
+          index: currentIndex + 1,
+          questionText: q.text[currentLang],
+          correctAnswer: q.answer[currentLang],
+          userAnswer: selected,
+          attempts: attempts,
+          earned: earned,
+          isCorrect: true
+        });
       } else if (attempts >= 3) {
         feedback.innerHTML = `<p>${currentLang === "ua" ? "Невірно. Переходимо далі." : "No correct answer. Moving on."}</p><p>${debrief}</p>`;
         feedback.classList.remove("hidden");
         continueBtn.classList.remove("hidden");
         buttons.forEach(btn => btn.disabled = true);
+
+        // Log as incorrect after 3 failed attempts
+        const q = scenarios[currentIndex];
+        answerLog.push({
+          index: currentIndex + 1,
+          questionText: q.text[currentLang],
+          correctAnswer: q.answer[currentLang],
+          userAnswer: selected,
+          attempts: attempts,
+          earned: 0,
+          isCorrect: false
+        });
       }
     }
 
@@ -615,13 +829,114 @@
         image = selectedGender === "male" ? "male3.jpg" : "female3.jpg";
       }
 
+      const callSignLine = lang === 'en'
+        ? `<p><strong>Call sign:</strong> ${escapeHtml(callSign)}</p>`
+        : `<p><strong>Позивний:</strong> ${escapeHtml(callSign)}</p>`;
+
+      // Build debrief table
+      const total = answerLog.length;
+      const correctCount = answerLog.filter(a => a.isCorrect).length;
+      const incorrectCount = total - correctCount;
+
+      const headers = (lang === 'en')
+        ? { debrief: 'Debrief', q: 'Question', your: 'Your Answer', correct: 'Correct Answer', att: 'Attempts', pts: 'Points', status: 'Status', submit: 'Submit' }
+        : { debrief: 'Розбір', q: 'Питання', your: 'Ваша відповідь', correct: 'Правильна відповідь', att: 'Спроб', pts: 'Бали', status: 'Статус', submit: 'Надіслати' };
+
+      const rows = answerLog.map(a => {
+        const qTxt = truncateText(a.questionText, 160);
+        const status = a.isCorrect
+          ? `<span class="pill ok">${lang === 'en' ? 'Correct' : 'Вірно'}</span>`
+          : `<span class="pill bad">${lang === 'en' ? 'Incorrect' : 'Помилка'}</span>`;
+        return `
+          <tr>
+            <td class="muted">${a.index}</td>
+            <td>${escapeHtml(qTxt)}</td>
+            <td>${escapeHtml(a.userAnswer || '-')}</td>
+            <td>${escapeHtml(a.correctAnswer)}</td>
+            <td>${a.attempts}</td>
+            <td>${a.earned}</td>
+            <td>${status}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const table = `
+        <div class="debrief-wrap">
+          <h3>${headers.debrief}</h3>
+          <p class="muted">${lang === 'en'
+            ? `Total: ${total} • Correct: ${correctCount} • Incorrect: ${incorrectCount}`
+            : `Всього: ${total} • Вірно: ${correctCount} • Помилки: ${incorrectCount}`}</p>
+          <div style="overflow:auto;">
+            <table class="debrief">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>${headers.q}</th>
+                  <th>${headers.your}</th>
+                  <th>${headers.correct}</th>
+                  <th>${headers.att}</th>
+                  <th>${headers.pts}</th>
+                  <th>${headers.status}</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+          <div style="text-align:center;margin-top:1rem;">
+            <button id="submitBtn" class="cyber-button">${headers.submit}</button>
+          </div>
+        </div>
+      `;
+
       result.classList.remove("hidden");
       result.innerHTML = `
         <h2>${lang === 'en' ? `You scored ${score}` : `Ви набрали ${score} балів`}</h2>
+        ${callSignLine}
         <h3>${title}</h3>
         <img src="${image}" alt="Result Image" style="max-width:300px;margin-top:15px;border:2px solid #38bdf8;border-radius:10px;" onerror="this.style.display='none';">
+        ${table}
       `;
+
+      // Wire Submit button -> webhook
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.addEventListener('click', () => {
+        submitBtn.disabled = true;
+        submitBtn.textContent = (lang === 'en') ? 'Submitting…' : 'Надсилання…';
+
+        const payload = {
+          event: 'final_score',
+          timestamp_utc: nowISO(),
+          callSign: callSign,
+          score: score,
+          language: currentLang,
+          gender: selectedGender,
+          totalQuestions: scenarios.length,
+          answers: answerLog.map(a => ({
+            index: a.index,
+            question: truncateText(a.questionText, 400),
+            correctAnswer: a.correctAnswer,
+            userAnswer: a.userAnswer,
+            attempts: a.attempts,
+            earned: a.earned,
+            isCorrect: a.isCorrect
+          })),
+          client: getClientMeta()
+        };
+
+        postToWebhook(payload)
+          .then(() => {
+            submitBtn.textContent = (lang === 'en') ? 'Submitted' : 'Надіслано';
+          })
+          .catch(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = (lang === 'en') ? 'Retry Submit' : 'Спробувати ще раз';
+          });
+      });
     }
+
+    // ===== Init =====
+    setCallsignPlaceholder();
+    syncStartButton();
   </script>
 </body>
 </html>
